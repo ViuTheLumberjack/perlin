@@ -24,8 +24,6 @@ add_library(noise
     sources/PerlinNoise.h
     sources/PerlinNoise.cpp
     sources/Plane.h
-    sources/Renderer.h
-    sources/Renderer.cpp
     sources/RidgedNoise.h
     sources/RidgedNoise.cpp
     sources/Sphere.h
@@ -39,6 +37,8 @@ add_library(noise
     sources/Torus.cpp
     sources/Vect3.h
     sources/Vect3.cpp
+    sources/Window.h
+    sources/Window.cpp
 )
 
 add_executable(renderer
@@ -50,11 +50,9 @@ add_executable(benchmark
 )
 
 find_package(OpenEXR REQUIRED)
+find_package(TBB REQUIRED)
+find_package(OpenMP REQUIRED)
 
-target_link_libraries(noise m SFML::Graphics SFML::Window SFML::System OpenEXR::OpenEXR)
+target_link_libraries(noise m SFML::Graphics SFML::Window SFML::System OpenEXR::OpenEXR TBB::tbb OpenMP::OpenMP_CXX)
 target_link_libraries(renderer noise)
 target_link_libraries(benchmark noise)
-
-find_package(TBB REQUIRED)
-target_link_libraries(renderer TBB::tbb)
-target_link_libraries(benchmark TBB::tbb)

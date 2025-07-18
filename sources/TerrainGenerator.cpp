@@ -30,6 +30,22 @@ std::vector<sf::Color> TerrainGenerator::getColorMap(int width, int height) cons
     return colorMap;
 }
 
+std::vector<sf::Color> TerrainGenerator::getColorMapOMP(int width, int height) const
+{
+    auto colorMap = std::vector<sf::Color>(width * height);
+
+#pragma omp parallel for collapse(2)
+    for (size_t y = 0; y < height; y++)
+    {
+        for (size_t x = 0; x < width; x++)
+        {
+            colorMap[y * width + x] = this->terrain->getColor((float)x / width, (float)y / height);
+        }
+    }
+
+    return colorMap;
+}
+
 std::vector<sf::Color> TerrainGenerator::getColorMapParallel(int width, int height) const
 {
     auto colorMap = std::vector<sf::Color>(width * height);
@@ -38,7 +54,6 @@ std::vector<sf::Color> TerrainGenerator::getColorMapParallel(int width, int heig
         oneapi::tbb::blocked_range<int>(0, width * height),
         [this, &colorMap, width, height](oneapi::tbb::blocked_range<int> const &r) -> void
         {
-            // make a copy of the terrain pointer
             for (int i = r.begin(); i < r.end(); ++i)
             {
                 int x = i % width;
@@ -54,21 +69,6 @@ std::vector<sf::Color> TerrainGenerator::getColorMapParallel(int width, int heig
 std::vector<sf::Color> TerrainGenerator::getColorMapGraph(int width, int height) const
 {
     auto colorMap = std::vector<sf::Color>(width * height);
-
-    /*
-    auto computationG = this->terrain->getGraph();
-    for (int y = 0; y < height; y++)
-    {
-        for (int x = 0; x < width; x++)
-        {
-            computationG.input_node->try_put(Vect3((float)x / width, (float)y / height, 0));
-            computationG.graph->wait_for_all();
-            float heightValue = 0;
-            computationG.output_node->try_get(heightValue);
-            colorMap[y * width + x] = this->terrain->getBiomeColor(heightValue);
-            }
-            }
-            */
 
     oneapi::tbb::parallel_for(
         oneapi::tbb::blocked_range<int>(0, width * height),

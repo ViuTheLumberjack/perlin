@@ -10,15 +10,16 @@
 #include "sources/Mult.h"
 #include "sources/RidgedNoise.h"
 #include "sources/Plane.h"
-#include "sources/Renderer.h"
+#include "sources/Terrace.h"
+#include "sources/Window.h"
 
 #include "SFML/Graphics/Color.hpp"
 
-constexpr const int WIDTH = 1900;
-constexpr const int HEIGHT = 900;
+constexpr const int WIDTH = 1080;
+constexpr const int HEIGHT = 720;
 
-constexpr const int NOISE_WIDTH = 1900;
-constexpr const int NOISE_HEIGHT = 900;
+constexpr const int NOISE_WIDTH = 1080;
+constexpr const int NOISE_HEIGHT = 720;
 
 constexpr const float MAX_MAP_HEIGHT = 4000.0f;
 
@@ -27,15 +28,10 @@ int main()
     int num_threads = oneapi::tbb::info::default_concurrency();
     printf("Number of threads: %d\n", num_threads);
 
-    std::unique_ptr<Terrain> plane = std::make_unique<Plane>(std::make_unique<RidgedNoise>(std::make_unique<Add>(
-                                                                                               std::make_unique<Exp>(10.0f, 1.2f, std::make_unique<PerlinNoise>(69, 0.5f, 3)),
-                                                                                               std::make_unique<Mult>(
-                                                                                                   std::make_unique<PerlinNoise>(69, 0.5f, 3),
-                                                                                                   std::make_unique<ConstantNoise>(0.25f)),
-                                                                                               2.0f, 1.0f),
-                                                                                           8),
-                                                             5.0f, MAX_MAP_HEIGHT);
+    std::unique_ptr<Terrain> plane = std::make_unique<Plane>(std::make_unique<RidgedNoise>(std::make_unique<PerlinNoise>(69, 0.5f, 1), 1),
+                                                             10.0f, MAX_MAP_HEIGHT);
 
+    /*
     plane->addBiome(4000, sf::Color::White);
     plane->addBiome(3000, sf::Color(84, 48, 5));
     plane->addBiome(2000, sf::Color(140, 81, 10));
@@ -51,12 +47,13 @@ int main()
     plane->addBiome(75, sf::Color(33, 113, 181));
     plane->addBiome(50, sf::Color(8, 81, 156));
     plane->addBiome(25, sf::Color(8, 48, 107));
+    */
 
     auto generator = std::make_unique<TerrainGenerator>(std::move(plane));
 
-    Renderer renderer(WIDTH, HEIGHT, "Noisy Terrain", std::move(generator), NOISE_WIDTH, NOISE_HEIGHT);
+    Window window(WIDTH, HEIGHT, "Noisy Terrain", std::move(generator), NOISE_WIDTH, NOISE_HEIGHT);
 
-    renderer.renderLoop();
+    window.renderLoop();
 
     return 0;
 }

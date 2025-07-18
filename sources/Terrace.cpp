@@ -3,9 +3,9 @@
 float Terrace::getValue(const Vect3 &value) const
 {
     float noiseValue = noiseFunction->getValue(value);
-    float step = 1.0f / terraces;
+    // float step = 1.0f / terraces;
 
-    float steppedValue = terraceOperation(noiseValue, step);
+    float steppedValue = terraceOperation(noiseValue, terraces);
 
     return steppedValue;
 }

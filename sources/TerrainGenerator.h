@@ -22,6 +22,7 @@ public:
 
     std::vector<float> getHeightMap(int width, int height) const;
     std::vector<sf::Color> getColorMap(int width, int height) const;
+    std::vector<sf::Color> getColorMapOMP(int width, int height) const;
     std::vector<sf::Color> getColorMapGraph(int width, int height) const;
     std::vector<sf::Color> getColorMapParallel(int width, int height) const;
 

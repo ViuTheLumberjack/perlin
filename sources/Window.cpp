@@ -1,11 +1,11 @@
-#include "Renderer.h"
+#include "Window.h"
 
-void Renderer::initializeWindow()
+void Window::initializeWindow()
 {
     this->window = std::make_unique<sf::RenderWindow>(sf::VideoMode({(uint)width, (uint)height}), title);
 }
 
-void Renderer::redrawWindow(const std::vector<sf::Color> &noise_map)
+void Window::redrawWindow(const std::vector<sf::Color> &noise_map)
 {
     window->clear(sf::Color::Black);
 
@@ -24,12 +24,32 @@ void Renderer::redrawWindow(const std::vector<sf::Color> &noise_map)
     window->display();
 }
 
-void Renderer::setTerrain(std::unique_ptr<TerrainGenerator> terrain)
+void Window::setTerrain(std::unique_ptr<TerrainGenerator> terrain)
 {
     this->generator = std::move(terrain);
 }
 
-void Renderer::renderLoop()
+void Window::saveImage(const std::string &filename, const std::vector<sf::Color> &noise_map) const
+{
+    std::vector<uint8_t> image_data(noise_map.size() * 4);
+    oneapi::tbb::parallel_for(
+        oneapi::tbb::blocked_range<size_t>(0, noise_map.size()),
+        [&image_data, &noise_map](const oneapi::tbb::blocked_range<size_t> &r)
+        {
+            for (size_t i = r.begin(); i < r.end(); ++i)
+            {
+                image_data[i * 4 + 0] = noise_map[i].r;
+                image_data[i * 4 + 1] = noise_map[i].g;
+                image_data[i * 4 + 2] = noise_map[i].b;
+                image_data[i * 4 + 3] = noise_map[i].a;
+            }
+        });
+
+    sf::Image image({pixelsPerRow, pixelsPerColumn}, image_data.data());
+    image.saveToFile(filename);
+}
+
+void Window::renderLoop()
 {
     std::vector<sf::Color> noise_map(pixelsPerRow * pixelsPerColumn, sf::Color::Black);
     while (window->isOpen())
@@ -72,6 +92,20 @@ void Renderer::renderLoop()
                     // Parallelize the noise generation using TBB
                     std::cout << "Noise PARALLEL graph" << std::endl;
                     redrawWindow(generator->getColorMapGraph(pixelsPerRow, pixelsPerColumn));
+                    break;
+                }
+                case sf::Keyboard::Scancode::C:
+                {
+                    // Parallelize the noise generation using TBB
+                    std::cout << "Enter filename: ";
+                    std::string saveName = "";
+                    std::cin >> saveName;
+                    if (saveName.empty())
+                    {
+                        saveName = "terrain.png";
+                    }
+                    saveImage(saveName, generator->getColorMap(pixelsPerRow, pixelsPerColumn));
+                    std::cout << "Saved " + saveName << std::endl;
                     break;
                 }
                 }

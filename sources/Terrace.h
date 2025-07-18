@@ -3,19 +3,20 @@
 
 #include "Aggregator.h"
 
+#include <cmath>
 #include <memory>
 #include <functional>
 
 #pragma once
 
-float ROUND_TERRACE(float value, float step)
+float inline FLOOR_TERRACE(float value, float terraces)
 {
-    return std::floor(value * step) / step;
+    return std::floor(value * terraces) / terraces;
 }
 
-float SMOOTH_TERRACE(float value, float step)
+float inline CEILING_TERRACE(float value, float terraces)
 {
-    return std::round(value / step) * step;
+    return std::ceil(value / terraces) * terraces;
 }
 
 class Terrace : public Aggregator
@@ -31,7 +32,7 @@ public:
 
 private:
     float terraces;
-    std::function<float(float, float)> terraceOperation = ROUND_TERRACE; // Default operation to round the value
+    std::function<float(float, float)> terraceOperation = FLOOR_TERRACE; // Default operation to round the value
 };
 
 #endif

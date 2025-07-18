@@ -59,10 +59,10 @@ float PerlinNoise::getValue(const Vect3 &value) const
 
 float PerlinNoise::noise(Vect3 &value) const
 {
-    int xi = (int)value.getX() & 255;             // Calculate the "unit cube" that the point asked will be located in
-    int yi = (int)value.getY() & 255;             // The left bound is ( |_x_|,|_y_|,|_z_| ) and the right bound is that
-    int zi = (int)value.getZ() & 255;             // plus 1.  Next we calculate the location (from 0.0 to 1.0) in that cube.
-    double xf = value.getX() - (int)value.getX(); // We also fade the location to smooth the result.
+    int xi = (int)value.getX() & 255;
+    int yi = (int)value.getY() & 255;
+    int zi = (int)value.getZ() & 255;
+    double xf = value.getX() - (int)value.getX();
     double yf = value.getY() - (int)value.getY();
     double zf = value.getZ() - (int)value.getZ();
     double u = fade(xf);

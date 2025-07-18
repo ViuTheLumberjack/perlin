@@ -9,15 +9,16 @@
 #include "SFML/Graphics/Color.hpp"
 #include "SFML/Graphics/RectangleShape.hpp"
 #include "SFML/Graphics/RenderWindow.hpp"
+#include "SFML/Graphics/Image.hpp"
 
 #include "TerrainGenerator.h"
 
 #pragma once
 
-class Renderer
+class Window
 {
 public:
-    Renderer(const int width, const int height, const std::string &title, std::unique_ptr<TerrainGenerator> generator, const int pixelWidth = 1, const int pixelHeight = 1)
+    Window(const int width, const int height, const std::string &title, std::unique_ptr<TerrainGenerator> generator, const int pixelWidth = 1, const int pixelHeight = 1)
         : width(width), height(height), pixelsPerRow(pixelWidth), pixelsPerColumn(pixelHeight), title(title), generator(std::move(generator))
     {
         initializeWindow();
@@ -25,9 +26,11 @@ public:
 
     void setTerrain(std::unique_ptr<TerrainGenerator> terrain);
 
+    void saveImage(const std::string &filename, const std::vector<sf::Color> &noise_map) const;
+
     void renderLoop();
 
-    ~Renderer() {};
+    ~Window() {};
 
 private:
     std::unique_ptr<sf::RenderWindow> window;
