@@ -276,13 +276,13 @@ if __name__ == "__main__":
                 {
                     'data': tbb_parallel[tbb_parallel['resolution'] == "1920x1080"],
                     'label': 'TBB Parallel For Speedup - 1920x1080',
-                    'color': 'darkgoldenrod',
+                    'color': 'purple',
                     'marker': 'o'
                 },
                 {
                     'data': tbb_parallel_graph[tbb_parallel_graph['resolution'] == "1920x1080"],
                     'label': 'TBB Graph Speedup - 1920x1080',
-                    'color': 'tan',
+                    'color': 'mediumvioletred',
                     'marker': 'v'
                 }
             ]
@@ -311,7 +311,7 @@ if __name__ == "__main__":
                         'mean': np.repeat(sequential[sequential['resolution']=="640x480"]['mean'].values[0], len(tbb_parallel['threads'].unique()))
                     }),
                     'label': 'Sequential Time - 640x480',
-                    'color': 'lightsalmon',
+                    'color': 'coral',
                     'marker': '^'
                 },
                 {
@@ -332,19 +332,19 @@ if __name__ == "__main__":
                         'mean': np.repeat(sequential[sequential['resolution']=="1024x786"]['mean'].values[0], len(tbb_parallel['threads'].unique()))
                     }),
                     'label': 'Sequential Time - 1024x786',
-                    'color': 'aquamarine',
+                    'color': 'mediumaquamarine',
                     'marker': '^'
                 },
                 {
                     'data': tbb_parallel[tbb_parallel['resolution'] == "1920x1080"],
                     'label': 'TBB Par For Time - 1920x1080',
-                    'color': 'darkgoldenrod',
+                    'color': 'purple',
                     'marker': 'o'
                 },
                 {
                     'data': tbb_parallel_graph[tbb_parallel_graph['resolution'] == "1920x1080"],
                     'label': 'TBB Graph Time - 1920x1080',
-                    'color': 'tan',
+                    'color': 'mediumvioletred',
                     'marker': 'v'
                 },
                 {
@@ -353,7 +353,7 @@ if __name__ == "__main__":
                         'mean': np.repeat(sequential[sequential['resolution']=="1920x1080"]['mean'].values[0], len(tbb_parallel['threads'].unique()))
                     }),
                     'label': 'Sequential Time - 1920x1080',
-                    'color': 'wheat',
+                    'color': 'palevioletred',
                     'marker': '^'
                 }
             ]
